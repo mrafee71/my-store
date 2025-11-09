@@ -24,6 +24,7 @@ const EditProductPage = () => {
         collections: "",
         material: '',
         gender: '',
+        tags: [],
         images: [
         ],
     });
@@ -187,8 +188,8 @@ const EditProductPage = () => {
             </div>
 
             {/* colors */}
-            <div className="mb-6">
-                <label htmlFor="colors" className="block font-semibold mb-2">Colors (comma seperated)</label>
+            <div className="mb-2">
+                <label htmlFor="colors" className="block font-semibold mb-2">Color codes (comma seperated)</label>
                 <input
                     type="text" 
                     id="colors" 
@@ -200,6 +201,68 @@ const EditProductPage = () => {
                     })}
                     className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-emerald-200"
                     placeholder="Enter colors (comma separated)"
+                />
+            </div>
+            <div className="mb-6">
+                <p className="font-bold">Colors:</p>
+                <div className="flex gap-2 mt-2">
+                    {productData.colors.map((color, index) => (
+                        <button key={index}
+                            className='w-10 h-10 rounded-full border-3 cursor-pointer hover:opacity-75 transition duration-200 border-gray-200'
+                            style={{ 
+                                backgroundColor: color.toLowerCase()
+                            }}
+                            title={color}>
+                            
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            {/* Tags */}
+            <div className="mb-6">
+                <label htmlFor="tags" className="block font-semibold mb-2">Tags (comma seperated)</label>
+                <input
+                    type="text" 
+                    id="tags" 
+                    name="tags"
+                    value={productData.tags.join(', ')}
+                    onChange={(e) => setProductData({
+                        ...productData,
+                        tags: e.target.value.split(',').map(tag => tag.trim())
+                    })}
+                    className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-emerald-200"
+                    placeholder="Enter tags (comma separated)"
+                />
+            </div>
+
+            {/* gender */}
+            <div className="mb-6">
+                <label htmlFor="gender" className="block font-semibold mb-2">Gender</label>
+                <input 
+                    type="text" 
+                    id="gender" 
+                    name="gender"
+                    value={productData.gender}
+                    onChange={handleChange}
+                    className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-emerald-200"
+                    placeholder="Enter Gender"
+                    required
+                />
+            </div>
+
+            {/* Collection */}
+            <div className="mb-6">
+                <label htmlFor="collections" className="block font-semibold mb-2">Collection</label>
+                <input 
+                    type="text" 
+                    id="collections" 
+                    name="collections"
+                    value={productData.collections}
+                    onChange={handleChange}
+                    className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-emerald-200"
+                    placeholder="Enter Collection"
+                    required
                 />
             </div>
 
