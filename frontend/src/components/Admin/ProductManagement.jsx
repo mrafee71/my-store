@@ -25,6 +25,11 @@ const ProductManagement = () => {
   return (
     <div className="max-w-7xl mx-auto p-4 md:p-6">
       <h2 className="text-2xl font-bold mb-2 md:mb-6">Product Management</h2>
+      <div className="mb-6">
+        <Link to="/admin/products/add" className="text-xl font-bold bg-green-400 text-white border-green-600 border-2 px-4 py-2 rounded hover:bg-green-500 transition-colors">
+          Add Product
+        </Link>
+      </div>
       <div className="overflow-x-auto shadow-md sm:rounded-lg">
         <table className="min-w-full text-left text-gray-500">
           <thead className="bg-gray-100 text-xs uppercase text-gray-700">

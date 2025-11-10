@@ -1,20 +1,19 @@
-import { useEffect, useState } from "react"
-import { useNavigate, useParams } from "react-router";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchProductDetails, updateProduct } from "../../redux/slices/productsSlice";
+import { useState } from "react"
+import { useNavigate } from "react-router";
+import { useDispatch } from "react-redux";
 import axios from "axios";
+import { createProduct } from "../../redux/slices/adminProductSlice";
 
-const EditProductPage = () => {
+const AddProductPage = () => {
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { id } = useParams();
-    const { selectedProduct, loading, error } = useSelector((state) => state.products);
 
     const [productData, setProductData] = useState({
         name: '',
         description: '',
         price: 0,
+        discountPrice: 0,
         countInStock: 0,
         sku: '',
         category: '',
@@ -27,21 +26,18 @@ const EditProductPage = () => {
         tags: [],
         images: [
         ],
+        metaTitle: "",
+        metaDescription: "",
+        metaKeywords: "",
+        dimensions: {
+            length: 0,
+            width: 0,
+            height: 0
+        },
+        weight: 0,
     });
 
     const [uploading, setUploading] = useState(false); // Flag for image uploading
-
-    useEffect(() => {
-        if (id) {
-            dispatch(fetchProductDetails(id));
-        }
-    }, [dispatch, id]);
-
-    useEffect(() => {
-        if (selectedProduct) {
-            setProductData(selectedProduct);
-        }
-    }, [selectedProduct]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -79,21 +75,14 @@ const EditProductPage = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        dispatch(updateProduct({id, productData}));
+        dispatch(createProduct(productData));
         navigate('/admin/products');
-    }
-
-    if (loading) {
-        return <div>Loading...</div>
-    }
-    if (error) {
-        return <div>Error fetching product details: {error}</div>
     }
 
 
   return (
     <div className="max-w-5xl mx-auto p-6 shadow-md rounded-md">
-        <h2 className="text-3xl font-bold mb-6">Edit Product</h2>
+        <h2 className="text-3xl font-bold mb-6">Add Product</h2>
         <form onSubmit={handleSubmit}>
             {/* name */}
             <div className="mb-6">
@@ -110,6 +99,23 @@ const EditProductPage = () => {
                 />
             </div>
 
+            {/* metaTitle */}
+            <div className="mb-6">
+                <label htmlFor="metaTitle" className="block font-semibold mb-2">
+                    Meta Title
+                    <span className="text-red-300 text-sm ml-2 relative bottom-0.5"> *Optional</span>
+                </label>
+                <input 
+                    type="text" 
+                    id="metaTitle" 
+                    name="metaTitle"
+                    value={productData.metaTitle}
+                    onChange={handleChange}
+                    className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-emerald-200"
+                    placeholder="Enter Meta Title"
+                />
+            </div>
+
             {/* description */}
             <div className="mb-6">
                 <label htmlFor="description" className="block font-semibold mb-2">Description</label>
@@ -122,6 +128,23 @@ const EditProductPage = () => {
                     placeholder="Enter product description"
                     rows={4}
                     required
+                ></textarea>
+            </div>
+
+            {/* metaDescription */}
+            <div className="mb-6">
+                <label htmlFor="metaDescription" className="block font-semibold mb-2">
+                    Meta Description
+                    <span className="text-red-300 text-sm ml-2 relative bottom-0.5"> *Optional</span>
+                </label>
+                <textarea 
+                    id="metaDescription" 
+                    name="metaDescription"
+                    value={productData.metaDescription}
+                    onChange={handleChange}
+                    className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-emerald-200"
+                    placeholder="Enter product Meta Description"
+                    rows={4}
                 ></textarea>
             </div>
 
@@ -151,6 +174,21 @@ const EditProductPage = () => {
                     onChange={handleChange}
                     className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-emerald-200"
                     placeholder="Enter product price"
+                    required
+                />
+            </div>
+
+            {/* discountPrice */}
+            <div className="mb-6">
+                <label htmlFor="discountPrice" className="block font-semibold mb-2">Discount Price</label>
+                <input 
+                    type="number" 
+                    id="discountPrice" 
+                    name="discountPrice"
+                    value={productData.discountPrice}
+                    onChange={handleChange}
+                    className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-emerald-200"
+                    placeholder="Enter product discount price"
                     required
                 />
             </div>
@@ -264,6 +302,78 @@ const EditProductPage = () => {
                 />
             </div>
 
+            {/* dimensions */}
+            <div className="mb-6">
+                <label className="block font-semibold mb-2">
+                    Dimensions (in cm)
+                    <span className="text-red-300 text-sm ml-2 relative bottom-0.5"> *Optional</span>
+                </label>
+                <div className="grid grid-cols-3 gap-4">
+                    <input
+                        type="number"
+                        id="length"
+                        name="length"
+                        value={productData.dimensions.length}
+                        onChange={(e) => setProductData({
+                            ...productData,
+                            dimensions: {
+                                ...productData.dimensions,
+                                length: e.target.value
+                            }
+                        })}
+                        placeholder="Length"
+                        className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-emerald-200"
+                    />
+                    <input
+                        type="number"
+                        id="width"
+                        name="width"
+                        value={productData.dimensions.width}
+                        onChange={(e) => setProductData({
+                            ...productData,
+                            dimensions: {
+                                ...productData.dimensions,
+                                width: e.target.value
+                            }
+                        })}
+                        placeholder="Width"
+                        className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-emerald-200"
+                    />
+                    <input
+                        type="number"
+                        id="height"
+                        name="height"
+                        value={productData.dimensions.height}
+                        onChange={(e) => setProductData({
+                            ...productData,
+                            dimensions: {
+                                ...productData.dimensions,
+                                height: e.target.value
+                            }
+                        })}
+                        placeholder="Height"
+                        className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-emerald-200"
+                    />
+                </div>
+            </div>
+
+            {/* weight */}
+            <div className="mb-6">
+                <label htmlFor="weight" className="block font-semibold mb-2">
+                    Weight (in kg)
+                    <span className="text-red-300 text-sm ml-2 relative bottom-0.5"> *Optional</span>
+                </label>
+                <input
+                    type="number"
+                    id="weight"
+                    name="weight"
+                    value={productData.weight}
+                    onChange={handleChange}
+                    placeholder="Weight"
+                    className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-emerald-200"
+                />
+            </div>
+
             {/* Tags */}
             <div className="mb-6">
                 <label htmlFor="tags" className="block font-semibold mb-2">Tags (comma seperated)</label>
@@ -278,6 +388,23 @@ const EditProductPage = () => {
                     })}
                     className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-emerald-200"
                     placeholder="Enter tags (comma separated)"
+                />
+            </div>
+
+            {/* metaKeywords */}
+            <div className="mb-6">
+                <label htmlFor="metaKeywords" className="block font-semibold mb-2">
+                    Meta Keywords
+                    <span className="text-red-300 text-sm ml-2 relative bottom-0.5"> *Optional</span>
+                </label>
+                <input 
+                    type="text" 
+                    id="metaKeywords" 
+                    name="metaKeywords"
+                    value={productData.metaKeywords}
+                    onChange={handleChange}
+                    className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-emerald-200"
+                    placeholder="Enter Meta Keywords"
                 />
             </div>
 
@@ -334,7 +461,7 @@ const EditProductPage = () => {
                 type="submit"
                 className="w-full py-2 bg-emerald-500 text-white font-semibold rounded-md hover:bg-emerald-600 transition-colors"
             >
-                Update Product
+                Add Product
             </button>
 
         </form>
@@ -342,4 +469,4 @@ const EditProductPage = () => {
   )
 }
 
-export default EditProductPage
+export default AddProductPage
